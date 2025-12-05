@@ -1,75 +1,34 @@
-import React, { useState } from "react";
-
-export default function LogTable() {
-  const [logs, setLogs] = useState([
-    { id: 1, level: "INFO", message: "App started", time: "10:10:20" },
-    {
-      id: 2,
-      level: "ERROR",
-      message: "Database not connected",
-      time: "10:11:01",
-    },
-    { id: 3, level: "WARNING", message: "Low memory", time: "10:12:44" },
-  ]);
-
-  const clearLogs = () => {
-    setLogs([]); // frontend only dummy
-  };
-
+export default function LogTable({ logs }) {
   return (
-    <div>
-      <div className="flex justify-between mb-4 items-center">
-        <h2 className="text-xl font-semibold">Log Records</h2>
-
-        <div className="flex gap-3">
-          <input
-            placeholder="Search logs..."
-            className="px-3 py-2 rounded bg-gray-800 border border-gray-600 text-white"
-          />
-
-          <button
-            onClick={clearLogs}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-bold"
-          >
-            Clear Logs
-          </button>
-        </div>
-      </div>
-
-      <div className="border border-gray-700 rounded-lg overflow-hidden">
-        <table className="w-full table-auto text-left">
-          <thead className="bg-gray-800">
-            <tr>
-              <th className="p-3">ID</th>
-              <th className="p-3">Level</th>
-              <th className="p-3">Message</th>
-              <th className="p-3">Time</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {logs.map((log) => (
+    <div className="bg-gray-900 rounded-lg p-4 shadow-xl border border-gray-800">
+      <h2 className="text-xl font-bold mb-3">Aktivitas Log</h2>
+      <table className="w-full border-collapse text-gray-300">
+        <thead>
+          <tr className="border-b border-gray-700">
+            <th className="p-2 text-left">Waktu</th>
+            <th className="p-2 text-left">Aktivitas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {logs.length > 0 ? (
+            logs.map((log, index) => (
               <tr
-                key={log.id}
-                className="border-t border-gray-700 hover:bg-gray-800"
+                key={index}
+                className="border-b border-gray-800 hover:bg-gray-800"
               >
-                <td className="p-3">{log.id}</td>
-                <td className="p-3">{log.level}</td>
-                <td className="p-3">{log.message}</td>
-                <td className="p-3">{log.time}</td>
+                <td className="p-2">{log.time}</td>
+                <td className="p-2">{log.activity}</td>
               </tr>
-            ))}
-
-            {logs.length === 0 && (
-              <tr>
-                <td className="p-4 text-center text-gray-500" colSpan={4}>
-                  No logs available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="2" className="p-4 text-center text-gray-500">
+                Tidak ada log aktivitas
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

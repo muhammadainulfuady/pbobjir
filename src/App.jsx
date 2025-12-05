@@ -1,16 +1,12 @@
-import React from "react";
-import Sidebar from "./components/Sidebar";
-import LogTable from "./components/LogTable";
+import { useState } from "react";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
-function App() {
-  return (
-    <div className="flex bg-gray-900 text-white min-h-screen">
-      <Sidebar />
-      <div className="flex-1 p-6">
-        <LogTable />
-      </div>
-    </div>
+export default function App() {
+  const [user, setUser] = useState(null);
+  return !user ? (
+    <Login onLogin={setUser} />
+  ) : (
+    <Dashboard username={user} onLogout={() => setUser(null)} />
   );
 }
-
-export default App;

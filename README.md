@@ -1,16 +1,135 @@
-# React + Vite
+# Logger Monitoring Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistem monitoring log real-time berbasis web sederhana tanpa database.  
+Frontend menggunakan **React + Vite** dengan **Tailwind CSS**, dan backend menggunakan **Python Flask** untuk menyimpan dan menampilkan log.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Fitur Utama
+- Mencatat log ke dalam file log (`log.txt`)
+- Refresh otomatis dari client untuk mengambil log terbaru
+- Dashboard modern dengan tampilan elegan (Tailwind CSS)
+- Fast HMR berkat Vite
+- Struktur kode sederhana, mudah dipahami dan dikembangkan
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Struktur Folder
+project-logger/
+│
+├── server.py # Backend Flask
+├── log.txt # File penyimpanan log
+│
+└── frontend/ # React + Vite + Tailwind
+├── index.html
+├── package.json
+├── vite.config.js
+└── src/
+├── App.jsx
+└── components/
+└── LogTable.jsx
 
-## Expanding the ESLint configuration
+yaml
+Copy code
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Cara Instalasi & Menjalankan Proyek
+
+### 1. Clone Repository
+```sh
+git clone https://github.com/username/logger-dashboard.git
+cd logger-dashboard
+2. Install Frontend Dependencies
+sh
+Copy code
+cd frontend
+npm install
+3. Jalankan Frontend
+sh
+Copy code
+npm run dev
+Akses:
+
+arduino
+Copy code
+http://localhost:5173
+4. Jalankan Backend Python
+sh
+Copy code
+cd ..
+python server.py
+Backend akan berjalan pada:
+
+arduino
+Copy code
+http://localhost:5000
+Cara Kerja Program
+Alur proses:
+User mengklik tombol Save Log pada dashboard
+
+React mengirim request ke endpoint Flask /write
+
+Flask menulis data log ke dalam file log.txt
+
+React memanggil /logs setiap refresh untuk mengambil data terbaru
+
+Dashboard menampilkan log dalam bentuk tabel
+
+Fungsi Refresh
+Fitur refresh digunakan untuk mengambil data log terbaru tanpa perlu restart server dan mensimulasikan mekanisme live-streaming log pada server production.
+
+Tampilan UI (Diagram)
+pgsql
+Copy code
++-----------------------------------------------------+
+|   Logger Dashboard                                  |
+|-----------------------------------------------------|
+|  [Input Text]    [Save Log]    [Refresh Logs]       |
+|                                                     |
+|  +---------------------------------------------+    |
+|  | Timestamp           | Pesan Log             |    |
+|  +---------------------------------------------+    |
+|  | 2025-12-04 13:23    | Login success         |    |
+|  | 2025-12-04 13:24    | User create record    |    |
+|  +---------------------------------------------+    |
++-----------------------------------------------------+
+Dependencies
+Frontend
+json
+Copy code
+"react": "^18",
+"axios": "^1.7",
+"tailwindcss": "^3",
+"vite": "^6"
+Backend
+nginx
+Copy code
+Flask
+Flask-CORS
+Install:
+
+sh
+Copy code
+pip install flask flask-cors
+Author
+Muhammad Ainul Fuady
+Mahasiswa Teknik Informatika – Universitas Trunojoyo Madura
+Bidang: Fullstack Web Developer, React, Python, Tailwind
+
+Lisensi
+Proyek ini bebas digunakan untuk belajar dan pengembangan pribadi.
+
+yaml
+Copy code
+
+---
+
+Siap pak komandan 🔥  
+
+Kalau mau saya:
+- Bikin **API Documentation** versi Markdown (POST /write, GET /logs)
+- Bikin **Flowchart / ERD gaya profesional**
+- Bikin **mockup UI** untuk README
+
+Tinggal bilang **"lanjutkan API docs"** 🚀
