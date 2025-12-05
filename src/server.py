@@ -2,65 +2,97 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import datetime
 
-# Membuat instance Flask
 app = Flask(__name__)
+CORS(app)  # Mengizinkan akses API dari frontend React (Cross-Origin Resource Sharing)
 
-# Mengaktifkan CORS agar frontend React (localhost:5173) bisa akses ke backend ini (localhost:5000)
-CORS(app)
+# =======================================================
+#  CREATIONAL DESIGN PATTERN: SINGLETON (LogManager)
+# =======================================================
+class LogManager:
+    # Static / class-level variable untuk menyimpan instance tunggal
+    __instance = None
 
-# Variabel untuk menyimpan log (sementara, belum pakai database)
-logs = []
+    def __init__(self):
+        # Mencegah pembuatan objek baru lebih dari satu kali
+        if LogManager.__instance is not None:
+            raise Exception("Singleton sudah pernah dibuat, gunakan get_instance()")
+
+        # Penyimpanan log sementara dalam list (tanpa database)
+        self.logs = []
+
+    @staticmethod
+    def get_instance():
+        """Method static untuk mengambil instance tunggal LogManager"""
+        if LogManager.__instance is None:
+            LogManager.__instance = LogManager()
+        return LogManager.__instance
+
+    # ==================== OPERASI MANAJEMEN LOG ==================== #
+    def add_log(self, activity):
+        """Menambah log baru dengan timestamp waktu real-time"""
+        self.logs.append({
+            "time": datetime.datetime.now().strftime("%H:%M:%S"),
+            "activity": activity
+        })
+
+    def get_logs(self):
+        """Mengambil semua log"""
+        return self.logs
+
+    def clear_logs(self):
+        """Menghapus seluruh log"""
+        self.logs.clear()
 
 
-# ====================== ENDPOINT LOGIN ====================== #
+# Buat instance singleton LogManager
+log_manager = LogManager.get_instance()
+
+
+# =======================================================
+#                 ROUTES / ENDPOINT API
+# =======================================================
+
 @app.post("/login")
 def login():
-    # Ambil data JSON yang dikirim dari frontend
+    """Endpoint login: menerima username, membuat log login, dan merespons ke frontend"""
     data = request.get_json()
     username = data.get("username")
 
-    # Validasi: username tidak boleh kosong
+    # Validasi sederhana input kosong
     if not username:
         return jsonify({"success": False, "message": "Username tidak boleh kosong"}), 400
 
-    # Menyimpan log aktivitas login
-    logs.append({
-        "time": datetime.datetime.now().strftime("%H:%M:%S"),  # waktu sekarang format jam:menit:detik
-        "activity": f"User '{username}' login"
-    })
+    # Membuat log login
+    log_manager.add_log(f"User '{username}' login")
 
-    # Response kembali ke React
     return jsonify({"success": True, "message": "Login berhasil", "user": username})
 
 
-# ====================== TAMBAH LOG BARU ====================== #
 @app.post("/log")
 def add_log():
+    """Endpoint untuk menambah event aktivitas ke log"""
     data = request.get_json()
-    activity = data.get("activity")  # Ambil aktivitas dari body JSON
+    activity = data.get("activity")
 
-    logs.append({
-        "time": datetime.datetime.now().strftime("%H:%M:%S"),
-        "activity": activity
-    })
-
+    log_manager.add_log(activity)
     return jsonify({"success": True})
 
 
-# ====================== GET LOGS ====================== #
 @app.get("/log")
 def get_logs():
-    # Kirim seluruh data log ke frontend
-    return jsonify(logs)
+    """Mengembalikan semua log untuk ditampilkan di dashboard"""
+    return jsonify(log_manager.get_logs())
 
 
-# ====================== HAPUS SEMUA LOG ====================== #
 @app.delete("/log")
 def delete_logs():
-    logs.clear()  # Kosongkan list logs
+    """Menghapus seluruh log"""
+    log_manager.clear_logs()
     return jsonify({"success": True, "message": "Semua log dihapus"})
 
 
-# ====================== MAIN PROGRAM ====================== #
+# =======================================================
+#                       MAIN SERVER
+# =======================================================
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)  # Jalankan server di port 5000, debug aktif untuk auto reload
+    app.run(port=5000, debug=True)  # Menyalakan server pada port 5000
