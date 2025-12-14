@@ -2,6 +2,16 @@ import { useState } from "react";
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const HandleLogin = () => {
+    if (!username.trim()) {
+      setErrorMessage("Username tidak boleh kosong");
+      return;
+    }
+    setErrorMessage("");
+    onLogin(username);
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-950">
@@ -13,13 +23,14 @@ export default function Login({ onLogin }) {
           onChange={(e) => setUsername(e.target.value)}
         />
         <button
-          onClick={() =>
-            username.trim() ? onLogin(username) : alert("Masukkan username")
-          }
+          onClick={HandleLogin}
           className="w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded font-bold"
         >
           Login
         </button>
+        {errorMessage && (
+          <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+        )}
       </div>
     </div>
   );
